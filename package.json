@@ -1,0 +1,24 @@
+{
+  "name": "battle-droids",
+  "version": "1.0.0",
+  "description": "Asteroid style 2D game with multiplayer",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedEarthBlueSky/battle-droids.git"
+  },
+  "keywords": [
+    "2D",
+    "game",
+    "multiplayer"
+  ],
+  "author": "Codeworks Personal Project Ian Salt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RedEarthBlueSky/battle-droids/issues"
+  },
+  "homepage": "https://github.com/RedEarthBlueSky/battle-droids#readme"
+}
