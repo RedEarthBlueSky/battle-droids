@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/RedEarthBlueSky/battle-droids/issues"
   },
-  "homepage": "https://github.com/RedEarthBlueSky/battle-droids#readme"
+  "homepage": "https://github.com/RedEarthBlueSky/battle-droids#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.5.1"
+  }
 }
