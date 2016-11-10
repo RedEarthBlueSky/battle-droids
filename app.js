@@ -1,13 +1,18 @@
-const express = require('express');
- // function handler to supply to http server
-const app = express();
+var express = require('express');
+var app = express();
+var serv = require('http').Server(app);
+const config = require('./config.json');
 
-app.get('/', function(req, res){
-  res.send('Battle droids in space real soon!');
-})
+app.get('/',function(req, res) {
+    res.sendFile(__dirname + '/client/index.html');
+});
 
-const hostname = 'localhost'
-const port = 3000;
-app.listen(port, function () {
-  console.log(`Server running on http://${hostname}:${port}`);
+app.use('/client',express.static(__dirname + '/client'));
+
+app.get('*',function(req, res) {
+    res.sendFile(__dirname + '/client/404.html');
+});
+
+serv.listen(config.port, function () {
+  console.log(`Server running on http://${config.hostname}:${config.port}`);
 });
