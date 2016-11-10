@@ -8,7 +8,10 @@
 
   <body>
     <main>
-
+      <canvas id="bg" width="600" height="360">
+      			Your browser does not support canvas.
+            Please try again with a different browser.
+      </canvas>
       <canvas id="myc" style="border:1px solid #000;">
       </canvas>
 
@@ -22,12 +25,13 @@
       });
 
       function canvasElements () {
-        // CSS: height, width, background
+        // style.css: height, width, background
         let canvas = document.getElementById("myc");  // get canvas element
         let myc = canvas.getContext('2d');             // set canvas as 2D
         myc.clearRect(0, 0, canvas.width, canvas.height);  //  start animation loop
         myc.font = '10px Arial';
         myc.fillText('SpaceShip', 50, 50);
+
       }
 
     </script>
