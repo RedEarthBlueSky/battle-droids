@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var serv = require('http').Server(app);
+var serv = require('http').Server(app);  // serves files from http
 const config = require('./config.json');
 
 app.get('/',function(req, res) {

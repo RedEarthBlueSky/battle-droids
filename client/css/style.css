@@ -1,3 +1,5 @@
+@import url("nightbg.css");
+
 html, body, main {
   margin:0;
   height:100%;
@@ -10,6 +12,7 @@ canvas {
 	background: transparent;
 }
 canvas#myc {
+  /*
   position: absolute;
   background: #212944;
   background: -moz-radial-gradient(center, ellipse cover, #212944 0%, #141f44 33%, #02001e 100%);
@@ -19,6 +22,8 @@ canvas#myc {
   background: -ms-radial-gradient(center, ellipse cover, #212944 0%, #141f44 33%, #02001e 100%);
   background: radial-gradient(ellipse at center, #212944 0%, #141f44 33%, #02001e 100%);
   filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#212944', endColorstr='#02001e', GradientType=1);
+  */
+  background:transparent;
   height:100%;
   margin:0;
   width: 100%;
