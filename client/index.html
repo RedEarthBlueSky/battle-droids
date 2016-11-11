@@ -14,7 +14,7 @@
       <div class="clouds"></div>
 
       <!-- The canvas for the panning background -->
-  		<canvas id="background">
+  		<canvas id="background" width='500' height='500'>
   			Your browser does not support canvas.
         Please try again with a different browser.
   		</canvas>
@@ -30,38 +30,41 @@
         let width = 57;
         let height = 101;
         let key, pos = 0;
+
         let shipCanvas = document.getElementById('ship');
         let shipContext = shipCanvas.getContext('2d');
-        let imgSpaceship = new Image();
-        imgSpaceship.onload = function draw(){
-          shipContext.drawImage(imgSpaceship, x, y);
+        let imgSpaceship = new Image();  //  want this in
+
+        let map = [ false, false, false, false ];
+
+        let resetMap = function () {
+          for (i=0;i<map.length;i++) {
+            map[i] = false;
+          }
         };
-        imgSpaceship.src = "/client/imgs/ship2.png";
 
-        // The keycodes mapped when presses a button.
-        KEY_CODES = {
-          32: 'space',
-          37: 'left',
-          38: 'up',
-          39: 'right',
-          40: 'down',
+        var clearScreen = function () {
+          shipContext.clearRect(0, 0, 600, 360 );
         }
 
-        KEY_STATUS = {};
-        for (code in KEY_CODES) {
-          KEY_STATUS[KEY_CODES[code]] = false;
+        //  define Ship class
+        let Ship = function () {
+          this.x = 50;
+          this.y = 50;
+          this.h = 50;
+          this.w = 50;
+          this.speed = 0;
         }
 
-        document.onkeydown = function (e) {
-          pos = 1;
-          key = window.event ? e.keyCode : e.which;
-        }
-        document.onkeyup=function(e){
-          pos=0;
+        //  draw method Ship class
+        Ship.prototype.draw = function () {
+          shipContext.drawImage(imgSpaceship, x, y);
+          imgSpaceship.src = "/client/imgs/ship2.png";
         }
 
-        setInterval(function () {
-          var speed = 1;
+        // move method ship class
+        Ship.prototype.move = function () {
+          var speed = 3;
           // shipContext.clearRect(x, y, 600, 360);
           if(pos==0)return;
           if(key==37) {
@@ -82,10 +85,40 @@
             if (y >= shipCanvas.height - height)
               y = shipCanvas.height - height;
           }
-          shipCanvas.width=shipCanvas.width;
-          shipContext.drawImage(imgSpaceship, x, y);
-        },5);
+        }
+
+
+        document.onkeydown = function (e) {
+          pos = 1;
+          key = window.event ? e.keyCode : e.which;
+        };
+        document.onkeyup=function(e){
+          pos=0;
+        };
+
+        //  Make a new ship
+        let ship = new Ship();
+            ship.draw();
+
+        function render () {
+          ship.move();
+          clearScreen();
+          ship.draw();
+          requestAnimFrame( render );
+        }(render());  //  IIFE calls itself
       });
+
+      // requestAnim shim layer by Paul Irish
+      window.requestAnimFrame = (function(){
+      	return  window.requestAnimationFrame   ||
+      			window.webkitRequestAnimationFrame ||
+      			window.mozRequestAnimationFrame    ||
+      			window.oRequestAnimationFrame      ||
+      			window.msRequestAnimationFrame     ||
+      			function(/* function */ callback, /* DOMElement */ element){
+      				window.setTimeout(callback, 1000 / 6);
+      			};
+      })();
     </script>
 
   </body>
