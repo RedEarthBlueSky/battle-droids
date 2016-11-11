@@ -27,6 +27,8 @@
       document.addEventListener("DOMContentLoaded", function(event) {
         let x = 200;
         let y = 200;
+        let width = 57;
+        let height = 101;
         let key, pos = 0;
         let shipCanvas = document.getElementById('ship');
         let shipContext = shipCanvas.getContext('2d');
@@ -34,7 +36,7 @@
         imgSpaceship.onload = function draw(){
           shipContext.drawImage(imgSpaceship, x, y);
         };
-        imgSpaceship.src = "/client/imgs/ship.png";
+        imgSpaceship.src = "/client/imgs/ship2.png";
 
         // The keycodes mapped when presses a button.
         KEY_CODES = {
@@ -66,12 +68,20 @@
             x-=speed;
             if (x<=0) x=0;
           }  // left
-          if(key==38){
+          if(key==38) {
             y-=speed;
-            if (y<=0) y=0; 
+            if (y<=0) y=0;
           } // up
-          if(key==39)x+=speed;  // right
-          if(key==40)y+=speed;  // down
+          if(key==39) {
+            x+=speed;
+            if (x >= shipCanvas.width - width)
+    					x = shipCanvas.width - width;
+          }
+          if(key==40) {
+            y+=speed;  // down
+            if (y >= shipCanvas.height - height)
+              y = shipCanvas.height - height;
+          }
           shipCanvas.width=shipCanvas.width;
           shipContext.drawImage(imgSpaceship, x, y);
         },5);
