@@ -1,39 +1,82 @@
-<!DOCTYPE htmle>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <title></title>
-    <link rel="stylesheet" type="text/css" href="/client/style.css">
+    <link rel="stylesheet" type="text/css" href="/client/css/style.css">
   </head>
 
+  <!-- <body onload="init()"> -->
   <body>
-    <main>
-      <canvas id="bg" width="600" height="360">
-      			Your browser does not support canvas.
-            Please try again with a different browser.
-      </canvas>
-      <canvas id="myc" style="border:1px solid #000;">
-      </canvas>
+    <main >
+      <div class="stars"></div>
+      <div class="twinkling"></div>
+      <div class="clouds"></div>
+
+      <!-- The canvas for the panning background -->
+  		<canvas id="background">
+  			Your browser does not support canvas.
+        Please try again with a different browser.
+  		</canvas>
+  		<canvas id="ship" width="600" height="360">
 
     </main>
 
-    <script>
-
+    <!-- <script src='/client/js/main.js'></script> -->
+     <script>
       document.addEventListener("DOMContentLoaded", function(event) {
-        console.log('Dom content loaded');
-        canvasElements();
+        let x = 200;
+        let y = 200;
+        let key, pos = 0;
+        let shipCanvas = document.getElementById('ship');
+        let shipContext = shipCanvas.getContext('2d');
+        let imgSpaceship = new Image();
+        imgSpaceship.onload = function draw(){
+          shipContext.drawImage(imgSpaceship, x, y);
+        };
+        imgSpaceship.src = "/client/imgs/ship.png";
+
+        // The keycodes mapped when presses a button.
+        KEY_CODES = {
+          32: 'space',
+          37: 'left',
+          38: 'up',
+          39: 'right',
+          40: 'down',
+        }
+
+        KEY_STATUS = {};
+        for (code in KEY_CODES) {
+          KEY_STATUS[KEY_CODES[code]] = false;
+        }
+
+        document.onkeydown = function (e) {
+          pos = 1;
+          key = window.event ? e.keyCode : e.which;
+        }
+        document.onkeyup=function(e){
+          pos=0;
+        }
+
+        setInterval(function () {
+          var speed = 1;
+          // shipContext.clearRect(x, y, 600, 360);
+          if(pos==0)return;
+          if(key==37) {
+            x-=speed;
+            if (x<=0) x=0;
+          }  // left
+          if(key==38){
+            y-=speed;
+            if (y<=0) y=0; 
+          } // up
+          if(key==39)x+=speed;  // right
+          if(key==40)y+=speed;  // down
+          shipCanvas.width=shipCanvas.width;
+          shipContext.drawImage(imgSpaceship, x, y);
+        },5);
       });
-
-      function canvasElements () {
-        // style.css: height, width, background
-        let canvas = document.getElementById("myc");  // get canvas element
-        let myc = canvas.getContext('2d');             // set canvas as 2D
-        myc.clearRect(0, 0, canvas.width, canvas.height);  //  start animation loop
-        myc.font = '10px Arial';
-        myc.fillText('SpaceShip', 50, 50);
-
-      }
-
     </script>
+
   </body>
 </html>
