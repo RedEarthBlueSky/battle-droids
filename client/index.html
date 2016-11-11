@@ -22,125 +22,98 @@
 
     </main>
 
-    <!-- <script src='/client/js/main.js'></script> -->
-     <script>
-      document.addEventListener("DOMContentLoaded", function(event) {
-        let x = 200;
-        let y = 200;
-        let width = 57;
-        let height = 101;
+   <!-- <script src='/client/js/main.js'></script> -->
+   <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      let x = 200;
+      let y = 200;
+      let width = 57;
+      let height = 101;
 
-        let shipCanvas = document.getElementById('ship');
-        let shipContext = shipCanvas.getContext('2d');
-        let imgSpaceship = new Image();  //  want this in
+      let shipCanvas = document.getElementById('ship');
+      let shipContext = shipCanvas.getContext('2d');
+      let imgSpaceship = new Image();
 
-        let map = [ false, false, false, false ];
+      let map = [ false, false, false, false ];
 
-        var clearScreen = function () {
-          shipContext.clearRect(0, 0, 600, 360 );
-        }
-
-        //  define Ship class
-        let Ship = function () {
-          this.x = 50;
-          this.y = 50;
-          this.h = 50;
-          this.w = 50;
-          this.speed = 0;
-        }
-
-        //  draw method Ship class
-        Ship.prototype.draw = function () {
-          shipContext.drawImage(imgSpaceship, x, y);
-          imgSpaceship.src = "/client/imgs/ship2.png";
-        }
-
-        // move method ship class
-        Ship.prototype.move = function () {
-          speed = 4;
-          clearScreen();
-          if(map[3]) {
-            x-=speed;
-            if (x<=0) x=0;
-          }  // left
-          if(map[0]) {
-            y-=speed;
-            if (y<=0) y=0;
-          } // up
-          if(map[1]) {
-            x+=speed;
-            if (x >= shipCanvas.width - width)
-    					x = shipCanvas.width - width;
-          }
-          if(map[2]) {
-            y+=speed;  // down
-            if (y >= shipCanvas.height - height)
-              y = shipCanvas.height - height;
-          }
-          ship.draw();
-        }
-
-        let mapKeys = (e, enabling) => {
-          if(e.keyCode == 38) {
-            map[0] = enabling;
-          }
-          if(e.keyCode == 39) {
-            map[1] = enabling;
-          }
-          if(e.keyCode == 40) {
-            map[2] = enabling;
-          }
-          if(e.keyCode == 37) {
-            map[3] = enabling;
-          }
-        }
-
-        document.onkeydown = function (e) {
-          mapKeys(e, true)
-        };
-        document.onkeyup=function(e){
-          mapKeys(e, false)
-        };
-
-        //  Make a new ship
-        let ship = new Ship();
-            ship.draw();
-
-        function render () {
-          ship.move();
-          ship.draw();
-
-          requestAnimFrame( render );
-        }(render());  //  IIFE calls itself
-      });
-
-      // The keycodes mapped when presses a button.
-      KEY_CODES = {
-        32: 'space',
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down',
-      };
-
-      KEY_STATUS = {};
-      for (code in KEY_CODES) {
-        KEY_STATUS[KEY_CODES[code]] = false;
+      var clearScreen = function () {
+        shipContext.clearRect(0, 0, 600, 360 );
       }
-      console.log(KEY_STATUS.left);
 
-      // requestAnim shim layer by Paul Irish
-      window.requestAnimFrame = (function(){
-      	return  window.requestAnimationFrame   ||
-      			window.webkitRequestAnimationFrame ||
-      			window.mozRequestAnimationFrame    ||
-      			window.oRequestAnimationFrame      ||
-      			window.msRequestAnimationFrame     ||
-      			function(/* function */ callback, /* DOMElement */ element){
-      				window.setTimeout(callback, 1000 / 6);
-      			};
-      })();
-    </script>
+      //  define Ship class
+      let Ship = function () {
+        this.x = 50;
+        this.y = 50;
+        this.h = 50;
+        this.w = 50;
+        this.speed = 0;
+      }
+
+      //  draw method Ship class
+      Ship.prototype.draw = () => {
+        shipContext.drawImage(imgSpaceship, x, y);
+        imgSpaceship.src = "/client/imgs/ship2.png";
+      }
+
+      // move method ship class
+      Ship.prototype.move = () => {
+        speed = 4;
+        clearScreen();
+        if(map[3]) x-=speed; // left
+        if(map[0]) y-=speed; // up
+        if(map[1]) x+=speed; // right
+        if(map[2]) y+=speed; // down
+        boundry();
+        ship.draw();
+      }
+
+      //  keep objects on the screen
+      let boundry = () => {
+        if (x<=0) x=0;
+        if (y<=0) y=0;
+        if (x >= shipCanvas.width - width) x = shipCanvas.width - width;
+        if (y >= shipCanvas.height - height) y = shipCanvas.height - height;
+      }
+
+      let mapKeys = (e, enabling) => {
+        if(e.keyCode == 38) map[0] = enabling; // up
+        if(e.keyCode == 39) map[1] = enabling; // right
+        if(e.keyCode == 40) map[2] = enabling; // down
+        if(e.keyCode == 37) map[3] = enabling; // left
+      }
+
+      document.onkeydown = (e) => {
+        mapKeys(e, true);
+      }
+
+      document.onkeyup = (e) => {
+        mapKeys(e, false);
+      }
+
+      //  Make a new ship
+      let ship = new Ship();
+      ship.draw();
+
+      function render () {
+        ship.move( map );
+        ship.draw();
+
+        requestAnimFrame( render );
+      }(render());  //  IIFE calls itself
+    });
+
+    // requestAnim shim layer by Paul Irish
+    window.requestAnimFrame = (function(){
+    	return  window.requestAnimationFrame   ||
+    			window.webkitRequestAnimationFrame ||
+    			window.mozRequestAnimationFrame    ||
+    			window.oRequestAnimationFrame      ||
+    			window.msRequestAnimationFrame     ||
+    			function(/* function */ callback, /* DOMElement */ element){
+    				window.setTimeout(callback, 1000 / 6);
+    			};
+    })();
+   </script>
 
   </body>
 </html>
