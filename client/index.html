@@ -27,11 +27,11 @@ function canvasApp() {
    let rotation = 0;
    let x = 50;
    let y = 50;
-   let width = 50;
-   let height = 50;
-   let W = (width/2) * -1;
-   let H = (height/2) * -1;
-   let angle = 0;
+  //  let width = 50;
+  //  let height = 50;
+  //  let W = (width/2) * -1;
+  //  let H = (height/2) * -1;
+  //  let angle = 0;
    let canvasWidth = canvas.width;
    let canvasHeight = canvas.height;
 
@@ -43,9 +43,9 @@ function canvasApp() {
      context.fillStyle = '#000000';
      context.fillRect(0, 0, canvasWidth, canvasHeight);
      context.fillStyle = '#ffffff';
-     context.font = '20px _sans';
-     context.textBaseline = 'top';
-     context.fillText  ("Player UI Here", 20, 390);
+    //  context.font = '20px _sans';
+    //  context.textBaseline = 'top';
+    //  context.fillText  ("Player UI Here", 20, 390);
 
      //  transformation
      let angleInRadians = rotation * Math.PI / 180;
@@ -54,38 +54,40 @@ function canvasApp() {
 
      //  translate canvas origin to center of Player
      context.translate(x,y);
-     
+     context.rotate(angleInRadians);
+
+     //drawShip
+     context.strokeStyle = '#ffffff';
+     context.beginPath();
+     context.moveTo(10,0);
+     context.lineTo(19,19);
+     context.lineTo(10,9);
+     context.moveTo(9,9);
+     context.lineTo(0,19);
+     context.lineTo(9,0);
+
+     context.stroke();
+     context.closePath();
+
+     //  add to rotation
+     rotation++;
 
       //update the shipState
       shipState++;
       if (shipState >1) {
          shipState=0;
+      }
+      if (shipState==1) {
+        //draw thrust
+        context.moveTo(8,13);
+        context.lineTo(11,13);
+        context.moveTo(9,14);
+        context.lineTo(9,18);
+        context.moveTo(10,14);
+        context.lineTo(10,18);
+      }
     }
-
-
-    //drawShip
-    context.strokeStyle = '#ffffff';
-    context.beginPath();
-    context.moveTo(10,0);
-    context.lineTo(19,19);
-    context.lineTo(10,9);
-    context.moveTo(9,9);
-    context.lineTo(0,19);
-    context.lineTo(9,0);
-
-    if (shipState==1) {
-       //draw thrust
-       context.moveTo(8,13);
-       context.lineTo(11,13);
-       context.moveTo(9,14);
-       context.lineTo(9,18);
-       context.moveTo(10,14);
-       context.lineTo(10,18);
-    }
-
-    context.stroke();
-    context.closePath();
-   }
+  }
 
    const FRAME_RATE = 40;
    var intervalTime = 1000/FRAME_RATE;
