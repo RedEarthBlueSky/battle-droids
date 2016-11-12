@@ -27,8 +27,8 @@ function canvasApp() {
    let rotation = 0;
    let x = 50;
    let y = 50;
-  //  let width = 50;
-  //  let height = 50;
+   let width = 20;
+   let height = 20;
   //  let W = (width/2) * -1;
   //  let H = (height/2) * -1;
   //  let angle = 0;
@@ -39,6 +39,7 @@ function canvasApp() {
    var shipState = 0; //0 = static, 1 = thrust
 
    function drawScreen() {
+
      // draw background and text
      context.fillStyle = '#000000';
      context.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -59,12 +60,14 @@ function canvasApp() {
      //drawShip
      context.strokeStyle = '#ffffff';
      context.beginPath();
-     context.moveTo(10,0);
-     context.lineTo(19,19);
-     context.lineTo(10,9);
-     context.moveTo(9,9);
-     context.lineTo(0,19);
-     context.lineTo(9,0);
+
+      // set rotation to image center
+      context.moveTo(10-.5*width,0-.5*height);
+      context.lineTo(19-.5*width,19-.5*height);
+      context.lineTo(10-.5*width,9-.5*height);
+      context.moveTo(9-.5*width,9-.5*height);
+      context.lineTo(0-.5*width,19-.5*height);
+      context.lineTo(9-.5*width,0-.5*height);
 
      context.stroke();
      context.closePath();
@@ -87,8 +90,6 @@ function canvasApp() {
         context.lineTo(10,18);
       }
     }
-  }
-
    const FRAME_RATE = 40;
    var intervalTime = 1000/FRAME_RATE;
    setInterval(drawScreen, intervalTime );
