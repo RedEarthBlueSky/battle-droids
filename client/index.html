@@ -1,134 +1,109 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="/client/css/style.css">
-  </head>
+<!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+        <title>CH8EX4: Ship Animation Loop</title>
+    </head>
+    <body>
+      <main>
 
-  <!-- <body onload="init()"> -->
-  <body>
-    <main >
-      <div class="stars"></div>
-      <div class="twinkling"></div>
-      <div class="clouds"></div>
-
-      <!-- The canvas for the panning background -->
-  		<canvas id="background" width='600' height='360'>
-  			Your browser does not support canvas.
-        Please try again with a different browser.
-  		</canvas>
-  		<canvas id="ship" width="600" height="360">
+        <canvas id="ship" width="800" height="420">
+         Your browser does not support HTML5 Canvas.
+        </canvas>
 
     </main>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(event) {
+   canvasApp();
+});
 
-   <!-- <script src='/client/js/main.js'></script> -->
-   <script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-      let x = 200;
-      let y = 200;
-      let width = 57;
-      let height = 101;
+function canvasApp() {
+   var canvas = document.getElementById("ship");
+   if (!canvas || !canvas.getContext) console.log('Canvas element has not loaded');
 
-      let shipCanvas = document.getElementById('ship');
-      let shipContext = shipCanvas.getContext('2d');
-      let imgSpaceship = new Image();
+   var context = canvas.getContext("2d");
+   if (!context) console.log('Canvas element has not loaded');
 
-      let map = [ false, false, false, false ];
+   let rotation = 0;
+   let x = 50;
+   let y = 50;
+   let width = 50;
+   let height = 50;
+   let W = (width/2) * -1;
+   let H = (height/2) * -1;
+   let angle = 0;
+   let canvasWidth = canvas.width;
+   let canvasHeight = canvas.height;
 
-      var clearScreen = function () {
-        shipContext.clearRect(0, 0, 600, 360 );
-      }
+   //canvasApp level variables
+   var shipState = 0; //0 = static, 1 = thrust
 
-      //  define Ship class
-      let Ship = function () {
-        this.x = 50;
-        this.y = 50;
-        this.h = 50;
-        this.w = 50;
-        this.speed = 0;
+   function drawScreen() {
+     // draw background and text
+     context.fillStyle = '#000000';
+     context.fillRect(0, 0, canvasWidth, canvasHeight);
+     context.fillStyle = '#ffffff';
+     context.font = '20px _sans';
+     context.textBaseline = 'top';
+     context.fillText  ("Player UI Here", 20, 390);
+
+     //  transformation
+     let angleInRadians = rotation * Math.PI / 180;
+     context.save();    // save the current stack
+     context.setTransform(1,0,0,1,0,0); //  reset to identity
+
+     //  translate canvas origin to center of Player
+     context.translate(x,y);
+     
+
+      //update the shipState
+      shipState++;
+      if (shipState >1) {
+         shipState=0;
+    }
+
+
+    //drawShip
+    context.strokeStyle = '#ffffff';
+    context.beginPath();
+    context.moveTo(10,0);
+    context.lineTo(19,19);
+    context.lineTo(10,9);
+    context.moveTo(9,9);
+    context.lineTo(0,19);
+    context.lineTo(9,0);
+
+    if (shipState==1) {
+       //draw thrust
+       context.moveTo(8,13);
+       context.lineTo(11,13);
+       context.moveTo(9,14);
+       context.lineTo(9,18);
+       context.moveTo(10,14);
+       context.lineTo(10,18);
+    }
+
+    context.stroke();
+    context.closePath();
+   }
+
+   const FRAME_RATE = 40;
+   var intervalTime = 1000/FRAME_RATE;
+   setInterval(drawScreen, intervalTime );
+}
+// requestAnim shim layer by Paul Irish
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame   ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame    ||
+      window.oRequestAnimationFrame      ||
+      window.msRequestAnimationFrame     ||
+      function(/* function */ callback, /* DOMElement */ element){
+        window.setTimeout(callback, 1000 / 250);
       };
+})();
 
-      //  draw method Ship class
-      Ship.prototype.draw = () => {
-        shipContext.drawImage(imgSpaceship, x, y);
-        imgSpaceship.src = "/client/imgs/ship2.png";
-      };
 
-      // move method ship class
-      Ship.prototype.move = () => {
-        speed = 4;
-        clearScreen();
-        if(map[0]) {
-          y-=speed;  // up
-          boundry();
-        }
-        if(map[1]) {
-          x+=speed; // right
-          boundry();
-        }
-        if(map[2]) {
-          y+=speed; // down
-          boundry();
-        }
-        if(map[3]) {
-          x-=speed; // left
-          boundry();
-        }
-        ship.draw();
-      };
-
-      //  keep objects on the screen
-      let boundry = () => {
-        if (x<=0)
-          x=0;
-        if (y<=0)
-          y=0;
-        if (x >= shipCanvas.width - width)
-          x = shipCanvas.width - width;
-        if (y >= shipCanvas.height - height)
-          y = shipCanvas.height - height;
-      }
-
-      let mapKeys = (e, enabling) => {
-        e.preventDefault();
-        if(e.keyCode == 38) map[0] = enabling; // up
-        if(e.keyCode == 39) map[1] = enabling; // right
-        if(e.keyCode == 40) map[2] = enabling; // down
-        if(e.keyCode == 37) map[3] = enabling; // left
-      }
-
-      document.onkeydown = (e) => {
-        mapKeys(e, true);
-      }
-
-      document.onkeyup = (e) => {
-        mapKeys(e, false);
-      }
-
-      //  Make a new ship
-      let ship = new Ship();
-      ship.draw();
-
-      function render () {
-        ship.move( map );
-
-        requestAnimFrame( render );
-      }(render());  //  IIFE calls itself
-    });
-
-    // requestAnim shim layer by Paul Irish
-    window.requestAnimFrame = (function(){
-    	return  window.requestAnimationFrame   ||
-    			window.webkitRequestAnimationFrame ||
-    			window.mozRequestAnimationFrame    ||
-    			window.oRequestAnimationFrame      ||
-    			window.msRequestAnimationFrame     ||
-    			function(/* function */ callback, /* DOMElement */ element){
-    				window.setTimeout(callback, 1000 / 250);
-    			};
-    })();
-   </script>
-
-  </body>
+</script>
+</body>
 </html>

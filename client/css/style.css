@@ -8,6 +8,11 @@ html, body, main {
   height:100%;
   min-height:100%;
 }
+main {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+}
 canvas {
   /*background: #212944;
   background: -moz-radial-gradient(center, ellipse cover, #212944 0%, #141f44 33%, #02001e 100%);
@@ -17,8 +22,7 @@ canvas {
   background: -ms-radial-gradient(center, ellipse cover, #212944 0%, #141f44 33%, #02001e 100%);
   background: radial-gradient(ellipse at center, #212944 0%, #141f44 33%, #02001e 100%);
   filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#212944', endColorstr='#02001e', GradientType=1);*/
-  background: grey;
-  position: absolute;
+  /*background: grey;*/
   top: 0px;
 	left: 0px;
   margin:0;
