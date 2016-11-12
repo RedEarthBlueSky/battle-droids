@@ -2,13 +2,18 @@
   <html lang="en">
     <head>
       <meta charset="UTF-8">
-        <title>CH8EX4: Ship Animation Loop</title>
+        <title>Battle Droids</title>
+        <link rel="stylesheet" type="text/css" href="/client/css/style.css">
     </head>
+    <!-- <body onload="init()"> -->
     <body>
       <main>
-
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+        <div class="clouds"></div>
         <canvas id="ship" width="800" height="420">
-         Your browser does not support HTML5 Canvas.
+          Your browser does not support canvas.
+          Please try again with a different browser.
         </canvas>
 
     </main>
@@ -19,61 +24,60 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 function canvasApp() {
    var canvas = document.getElementById("ship");
-   if (!canvas || !canvas.getContext) console.log('Canvas element has not loaded');
-
    var context = canvas.getContext("2d");
-   if (!context) console.log('Canvas element has not loaded');
 
-   let rotation = 0;
-   let x = 50;
-   let y = 50;
-   let width = 20;
-   let height = 20;
-  //  let W = (width/2) * -1;
-  //  let H = (height/2) * -1;
-  //  let angle = 0;
+   var rotation = 0;
+   var x = 50;
+   var y = 50;
+   var facingX = 0;
+   var facingY = 0;
+   var movingX = 0;
+   var movingY = 0;
+   var width = 20;
+   var height = 20;
+   var rotationalVelocity = 5; //how many degrees to turn the ship
+   var thrust = .03;
+   var map = [];
    let canvasWidth = canvas.width;
    let canvasHeight = canvas.height;
 
-   //canvasApp level variables
    var shipState = 0; //0 = static, 1 = thrust
 
-   function drawScreen() {
+   function drawCanvas() {
 
-     // draw background and text
+     // background
      context.fillStyle = '#000000';
      context.fillRect(0, 0, canvasWidth, canvasHeight);
      context.fillStyle = '#ffffff';
-    //  context.font = '20px _sans';
-    //  context.textBaseline = 'top';
-    //  context.fillText  ("Player UI Here", 20, 390);
 
-     //  transformation
-     let angleInRadians = rotation * Math.PI / 180;
+     //  transform
+     let radians = rotation * Math.PI / 180;
      context.save();    // save the current stack
      context.setTransform(1,0,0,1,0,0); //  reset to identity
 
-     //  translate canvas origin to center of Player
-     context.translate(x,y);
-     context.rotate(angleInRadians);
+     //  canvas origin Player center
+     context.translate(x+.5*width,y+.5*height);
+     context.rotate(radians);
 
      //drawShip
      context.strokeStyle = '#ffffff';
      context.beginPath();
 
+      // draw the ship
       // set rotation to image center
-      context.moveTo(10-.5*width,0-.5*height);
-      context.lineTo(19-.5*width,19-.5*height);
-      context.lineTo(10-.5*width,9-.5*height);
-      context.moveTo(9-.5*width,9-.5*height);
-      context.lineTo(0-.5*width,19-.5*height);
-      context.lineTo(9-.5*width,0-.5*height);
+      context.moveTo(-10,-10);
+      context.lineTo(10,0);
+      context.moveTo(10,1);
+      context.lineTo(-10,10);
+      context.lineTo(1,1);
+      context.moveTo(1,-1);
+      context.lineTo(-10,-10);
 
      context.stroke();
      context.closePath();
 
-     //  add to rotation
-     rotation++;
+     //  restore context
+     context.restore();
 
       //update the shipState
       shipState++;
@@ -90,9 +94,76 @@ function canvasApp() {
         context.lineTo(10,18);
       }
     }
+
+
+    function incrementAngle() {
+         angle += 5;
+      if(angle > 360){
+        angle = 0;
+        }
+    }
+    function decrementAngle(){
+      angle -= 5;
+      if(angle > 360){
+        angle = 0;
+        }
+    }
+    let convertToRadians = (degree) => {
+        return degree*(Math.PI/180);
+    }
+
+    let boundry = () => {
+      if (x<=0)
+        x=0;
+      if (y<=0)
+        y=0;
+      if (x >= canvas.width - width*2)
+        x = canvas.width - width*2;
+      if (y >= canvas.height - height*2)
+        y = canvas.height - height*2;
+    }
+
    const FRAME_RATE = 40;
    var intervalTime = 1000/FRAME_RATE;
-   setInterval(drawScreen, intervalTime );
+   setInterval(function () {
+     drawCanvas();
+     boundry();
+     keyPress();
+   }, intervalTime );
+
+   document.onkeydown = function(e){
+      e = e?e:window.event;
+      map[e.keyCode] = true;
+   }
+
+   document.onkeyup = function(e){
+      e = e?e:window.event;
+      map[e.keyCode] = false;
+   };
+
+   let keyPress = () => {
+     if (map[38] == true) {
+       let radians = rotation * Math.PI/180;
+       facingX = Math.cos(radians);
+       facingY = Math.sin(radians);
+
+       movingX = movingX + thrust*facingX;
+       movingY = movingY + thrust*facingY;
+     }
+
+     if (map[37]==true) {
+       //  decrementAngle
+       rotation -= rotationalVelocity;
+     }
+
+      if (map[39]==true) {
+        // incrementAngle
+        rotation += rotationalVelocity;
+      }
+
+     x = x + movingX;
+     y = y + movingY;
+   }
 }
 // requestAnim shim layer by Paul Irish
 window.requestAnimFrame = (function(){
@@ -105,6 +176,8 @@ window.requestAnimFrame = (function(){
         window.setTimeout(callback, 1000 / 250);
       };
 })();
+
+
 
 
 </script>
