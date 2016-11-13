@@ -22,26 +22,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
    canvasApp();
 });
 
-function canvasApp() {
-   var canvas = document.getElementById("ship");
-   var context = canvas.getContext("2d");
+let canvasApp = () => {
+   let canvas = document.getElementById("ship");
+   let context = canvas.getContext("2d");
 
-   var rotation = 0;
-   var x = 50;
-   var y = 50;
-   var facingX = 0;
-   var facingY = 0;
-   var movingX = 0;
-   var movingY = 0;
-   var width = 20;
-   var height = 20;
-   var rotationalVelocity = 5; //how many degrees to turn the ship
-   var thrust = .03;
-   var map = [];
+   let rotation = 0;
+   let x = 50;
+   let y = 50;
+   let facingX = 0;
+   let facingY = 0;
+   let movingX = 0;
+   let movingY = 0;
+   let width = 20;
+   let height = 20;
+   let rotationalVelocity = 5; //how many degrees to turn the ship
+   let thrust = .03;
+   let map = [];
    let canvasWidth = canvas.width;
    let canvasHeight = canvas.height;
 
-   var shipState = 0; //0 = static, 1 = thrust
+   let shipState = 0; //0 = static, 1 = thrust
 
    function drawCanvas() {
 
@@ -124,7 +124,7 @@ function canvasApp() {
     }
 
    const FRAME_RATE = 40;
-   var intervalTime = 1000/FRAME_RATE;
+   let intervalTime = 1000/FRAME_RATE;
    setInterval(function () {
      drawCanvas();
      boundry();
