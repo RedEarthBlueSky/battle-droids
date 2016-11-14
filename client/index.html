@@ -24,15 +24,6 @@
       let canvas = document.getElementById("ship");
       let context = canvas.getContext("2d");
 
-      var socket = io();
-      socket.emit('happy', {
-        reason: 'it works so far I hope'
-      });
-
-      socket.on('serverMsg', function (data) {
-        console.log(data.socketId, data.x, data.y, data.players);
-      });
-
       let canvasWidth = canvas.width;
       let canvasHeight = canvas.height;
 
@@ -56,9 +47,9 @@
 
       let drawCanvas = (x, y, rotationalVelocity) => {
         // background
-        context.fillStyle = '#000000';
-        context.fillRect(0, 0, canvasWidth, canvasHeight);
-        context.fillStyle = '#ffffff';
+        // context.fillStyle = '#000000';
+        // context.fillRect(0, 0, canvasWidth, canvasHeight);
+        // context.fillStyle = '#ffffff';
         //  transform
         let radians = convertToRadians(rotation);
         context.save();    // save the current stack
@@ -67,7 +58,7 @@
         context.translate(x+W,y+H);
         context.rotate(radians);
         //drawShip
-        context.strokeStyle = '#ffffff';
+        context.strokeStyle = '#000000';
         context.beginPath();
         // draw the ship
         // set rotation to image center
@@ -100,18 +91,12 @@
       }
 
       var socket = io();
-      socket.emit('happy', {
-        reason: 'it works so far I hope'
-      });
-      socket.on('serverMsg', function (data) {
-        console.log(data.socketId, data.x, data.y, data.players);
-      });
       socket.on('newPosition', function (data) {
+        context.clearRect(0,0,600,320)
         for (var i = 0; i < data.length; i++) {
           drawCanvas(data[i].x, data[i].y);
         }
       });
-
 
       let convertToRadians = (degree) => {
         return degree*(Math.PI/180);
