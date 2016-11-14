@@ -26,6 +26,38 @@ let Player = (id) => {
     y:50,
     rotate:0,
     id:id,
+    facingX:0,
+    facingY:0,
+    movingX:0,
+    movingY:0,
+    width:30,  // drawn element width
+    height:30, // drawn element height
+    map:[],
+    thrust:.06,
+    rotationalVelocity:5 //how many degrees to turn the ship
+  }
+
+  self.keyPress = () => {
+     if (self.map[38] == true) {
+       let radians = self.rotation * Math.PI/180;
+       self.facingX = Math.cos(radians);
+       self.facingY = Math.sin(radians);
+       self.movingX = self.movingX + self.thrust*self.facingX;
+       self.movingY = self.movingY + self.thrust*self.facingY;
+     }
+
+     if (self.map[37] == true) {
+       //  decrementAngle
+       self.rotate -= self.rotationalVelocity;
+     }
+
+     if (self.map[39] == true) {
+        // incrementAngle
+       self.rotate += self.rotationalVelocity;
+     }
+
+     self.x = self.x + self.movingX;
+     self.y = self.y + self.movingY;
   }
   return self;
 };
@@ -43,6 +75,11 @@ io.sockets.on('connection', function(socket){
     delete SOCKET_LIST[socket.id];
     delete PLAYER_LIST[socket.id];
   });
+
+  socket.on('keyPressed', function (data) {
+    player.map[data.keyCode] = data.state;
+    console.log(player.map[data.keyCode]);
+  });
 });
 
 //  create game loop
@@ -52,13 +89,11 @@ setInterval(function () {
   let pack = [];  //  package to update all players
   for (var i in PLAYER_LIST) {
     var player = PLAYER_LIST[i];
-    player.x++;
-    player.y++;
-    player.rotate++;
+    player.keyPress();
     pack.push({
       x:player.x,
       y:player.y,
-      rotate:player.rotate
+      rotate:player.rotate,
     });
     //  loop through the sockets and emit the pack for each socket
     //  broadcast fixes issue with not update but also makes very buggy

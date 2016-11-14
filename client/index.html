@@ -31,16 +31,16 @@
       let rotation = 0;
       let x = 50;
       let y = 50;
-      let facingX = 0;
-      let facingY = 0;
-      let movingX = 0;
-      let movingY = 0;
+      // let facingX = 0;
+      // let facingY = 0;
+      // let movingX = 0;
+      // let movingY = 0;
       let width = 30;  // drawn element width
       let height = 30; // drawn element height
       let W = width/2;
       let H = height/2;
-      let rotationalVelocity = 5; //how many degrees to turn the ship
-      let thrust = .06;
+      // let rotationalVelocity = 5; //how many degrees to turn the ship
+      // let thrust = .06;
       let map = [];
       let shipState = 0; //0 = static, 1 = thrust
 
@@ -117,40 +117,43 @@
       setInterval(function () {
       //   // drawCanvas(x, y);
         boundry();
-        keyPress();
+        // keyPress();
       }, frameTime );
 
       document.onkeydown = (e) => {
         e = e?e:window.event;
-        map[e.keyCode] = true;
+        console.log(e.keyCode);
+        socket.emit('keyPressed',{keyCode:e.keyCode, state:true});
+        // map[e.keyCode] = true;
       };
 
       document.onkeyup = (e) => {
         e = e?e:window.event;
-        map[e.keyCode] = false;
+        socket.emit('keyPressed',{keyCode:e.keyCode, state:false});
+        // map[e.keyCode] = false;
       };
 
-      let keyPress = () => {
-         if (map[38] == true) {
-           let radians = rotation * Math.PI/180;
-           facingX = Math.cos(radians);
-           facingY = Math.sin(radians);
-           movingX = movingX + thrust*facingX;
-           movingY = movingY + thrust*facingY;
-         }
-
-         if (map[37]==true) {
-           //  decrementAngle
-           rotation -= rotationalVelocity;
-         }
-
-         if (map[39]==true) {
-            // incrementAngle
-           rotation += rotationalVelocity;
-         }
-         x = x + movingX;
-         y = y + movingY;
-      }
+      // let keyPress = () => {
+      //    if (map[38] == true) {
+      //      let radians = rotation * Math.PI/180;
+      //      facingX = Math.cos(radians);
+      //      facingY = Math.sin(radians);
+      //      movingX = movingX + thrust*facingX;
+      //      movingY = movingY + thrust*facingY;
+      //    }
+      //
+      //    if (map[37]==true) {
+      //      //  decrementAngle
+      //      rotation -= rotationalVelocity;
+      //    }
+      //
+      //    if (map[39]==true) {
+      //       // incrementAngle
+      //      rotation += rotationalVelocity;
+      //    }
+      //    x = x + movingX;
+      //    y = y + movingY;
+      // }
 
     });
 
