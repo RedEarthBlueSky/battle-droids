@@ -4,6 +4,7 @@
       <meta charset="UTF-8">
         <title>Battle Droids</title>
         <link rel="stylesheet" type="text/css" href="/client/css/style.css">
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     </head>
     <!-- <body onload="init()"> -->
     <body>
@@ -11,29 +12,174 @@
         <div class="stars"></div>
         <div class="twinkling"></div>
         <div class="clouds"></div>
-        <canvas id="ship" width="800" height="420">
+        <canvas id="ship" width="600" height="320">
           Your browser does not support canvas.
           Please try again with a different browser.
         </canvas>
       </main>
-      <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-      <script>
-       let canvas = document.getElementById("ship");
-       let context = canvas.getContext("2d");
 
-       context.font='30px Arial';
+    <script type="text/javascript">
 
-       var socket = io();
+    document.addEventListener("DOMContentLoaded", function(event) {
+      let canvas = document.getElementById("ship");
+      let context = canvas.getContext("2d");
 
-       socket.on('newPosition', function (data) {
-         context.clearRect(0,0,800,420);
-         for (var i = 0; i < data.length; i++) {
-           context.fillStyle = '#000000';
-           context.fillRect(0, 0, 800, 420);
-           context.fillStyle = '#ffffff';
-           context.fillText(data[i].number, data[i].x, data[i].y);
+      var socket = io();
+      socket.emit('happy', {
+        reason: 'it works so far I hope'
+      });
+
+      socket.on('serverMsg', function (data) {
+        console.log(data.socketId, data.x, data.y, data.players);
+      });
+
+      let canvasWidth = canvas.width;
+      let canvasHeight = canvas.height;
+
+      //  player only
+
+      let rotation = 0;
+      let x = 50;
+      let y = 50;
+      let facingX = 0;
+      let facingY = 0;
+      let movingX = 0;
+      let movingY = 0;
+      let width = 30;  // drawn element width
+      let height = 30; // drawn element height
+      let W = width/2;
+      let H = height/2;
+      let rotationalVelocity = 5; //how many degrees to turn the ship
+      let thrust = .06;
+      let map = [];
+      let shipState = 0; //0 = static, 1 = thrust
+
+      let drawCanvas = (x, y, rotationalVelocity) => {
+        // background
+        context.fillStyle = '#000000';
+        context.fillRect(0, 0, canvasWidth, canvasHeight);
+        context.fillStyle = '#ffffff';
+        //  transform
+        let radians = convertToRadians(rotation);
+        context.save();    // save the current stack
+        context.setTransform(1,0,0,1,0,0); //  reset to identity
+        //  canvas origin Player center
+        context.translate(x+W,y+H);
+        context.rotate(radians);
+        //drawShip
+        context.strokeStyle = '#ffffff';
+        context.beginPath();
+        // draw the ship
+        // set rotation to image center
+        context.moveTo(-15,-15);
+        context.lineTo(15,0);
+        context.moveTo(15,1);
+        context.lineTo(-15,15);
+        context.lineTo(1,1);
+        context.moveTo(1,-1);
+        context.lineTo(-15,-15);
+        context.lineWidth=2;
+        context.stroke();
+        context.closePath();
+        //  restore context
+        context.restore();
+        //update the shipState
+        shipState++;
+        if (shipState==1) {
+          //draw thrust
+          context.moveTo(8,13);
+          context.lineTo(11,13);
+          context.moveTo(9,14);
+          context.lineTo(9,18);
+          context.moveTo(10,14);
+          context.lineTo(10,18);
+        }
+        if (shipState >1) {
+           shipState=0;
+        }
+      }
+
+      var socket = io();
+      socket.emit('happy', {
+        reason: 'it works so far I hope'
+      });
+      socket.on('serverMsg', function (data) {
+        console.log(data.socketId, data.x, data.y, data.players);
+      });
+      socket.on('newPosition', function (data) {
+        for (var i = 0; i < data.length; i++) {
+          drawCanvas(data[i].x, data[i].y);
+        }
+      });
+
+
+      let convertToRadians = (degree) => {
+        return degree*(Math.PI/180);
+      }
+
+      let boundry = () => {
+        if (x<=0) x=0;
+        if (y<=0) y=0;
+        if (x >= canvas.width - W)
+          x = canvas.width - W;
+        if (y >= canvas.height - H)
+          y = canvas.height - H;
+      }
+
+      //  create game loop
+      // const FRAMES_PER_SECOND = 40;
+      // let frameTime = 1000/FRAMES_PER_SECOND;
+      // setInterval(function () {
+      //   // drawCanvas(x, y);
+      //   boundry();
+      //   keyPress();
+      // }, frameTime );
+
+      document.onkeydown = (e) => {
+        e = e?e:window.event;
+        map[e.keyCode] = true;
+      };
+
+      document.onkeyup = (e) => {
+        e = e?e:window.event;
+        map[e.keyCode] = false;
+      };
+
+      let keyPress = () => {
+         if (map[38] == true) {
+           let radians = rotation * Math.PI/180;
+           facingX = Math.cos(radians);
+           facingY = Math.sin(radians);
+           movingX = movingX + thrust*facingX;
+           movingY = movingY + thrust*facingY;
          }
-       });
-      </script>
+
+         if (map[37]==true) {
+           //  decrementAngle
+           rotation -= rotationalVelocity;
+         }
+
+         if (map[39]==true) {
+            // incrementAngle
+           rotation += rotationalVelocity;
+         }
+         x = x + movingX;
+         y = y + movingY;
+      }
+
+    });
+
+    // requestAnim shim layer by Paul Irish
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame   ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        window.oRequestAnimationFrame      ||
+        window.msRequestAnimationFrame     ||
+        function(/* function */ callback, /* DOMElement */ element){
+          window.setTimeout(callback, 1000 / 250);
+        };
+    })();
+    </script>
   </body>
 </html>

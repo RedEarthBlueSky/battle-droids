@@ -12,7 +12,7 @@ let canvasApp = () => {
 	let y = 50;
 	let facingX = 0;
 	let facingY = 0;
-	let movingX = 0;
+	let movingX = 0;a
 	let movingY = 0;
 	let width = 30;
 	let height = 30;
@@ -28,9 +28,9 @@ let canvasApp = () => {
 
 	let drawCanvas = () => {
 		// background
-		// context.fillStyle = '#000000';
-		// context.fillRect(0, 0, canvasWidth, canvasHeight);
-		// context.fillStyle = '#ffffff';
+		context.fillStyle = '#000000';
+		context.fillRect(0, 0, canvasWidth, canvasHeight);
+		context.fillStyle = '#ffffff';
 
 		//  transform
 		let radians = convertToRadians(rotation);
@@ -95,18 +95,18 @@ let canvasApp = () => {
 		return degree*(Math.PI/180);
 	}
 
-	let boundry = () => {
-		if (x<=0) x=0;
-		if (y<=0) y=0;
-		if (x >= canvas.width - width*2)
-			x = canvas.width - width*2;
-		if (y >= canvas.height - height*2)
-			y = canvas.height - height*2;
-	}
+	// let boundry = () => {
+	// 	if (x<=0) x=0;
+	// 	if (y<=0) y=0;
+	// 	if (x >= canvas.width - width*2)
+	// 		x = canvas.width - width*2;
+	// 	if (y >= canvas.height - height*2)
+	// 		y = canvas.height - height*2;
+	// }
 
 	//  create game loop
-	const FRAMES_PER_SECOND = 40;
-	let frameTime = 1000/FRAMES_PER_SECOND;
+	// const FRAMES_PER_SECOND = 40;
+	// let frameTime = 1000/FRAMES_PER_SECOND;
 	setInterval(function () {
 		drawCanvas();
 		boundry();
