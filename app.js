@@ -25,23 +25,18 @@ io.sockets.on('connection', function(socket){
   socket.id = Math.random();
   socket.x = 0;
   socket.y = 0;
+  socket.rotate = 0;
   SOCKET_LIST[socket.id] = socket;
 
-  socket.on('happy', function (data) {
-    console.log('happy emit from client');
-    console.log('Happy because*: ' + data.reason);
-  });
-
-  socket.emit('serverMsg', {
-    socketId: socket.id,
-    x: socket.x,
-    y: socket.y,
-    players: Object.keys(SOCKET_LIST).length
+  //  if leaver server disconnect session.  Also works
+  //  on page refresh...
+  socket.on('disconnect', function () {
+    delete SOCKET_LIST[socket.id];
   });
 });
 
 //  create game loop
-const FRAMES_PER_SECOND = 40;
+const FRAMES_PER_SECOND = 45;
 let frameTime = 1000/FRAMES_PER_SECOND;
 setInterval(function () {
   let pack = [];  //  package to update all players
@@ -49,10 +44,13 @@ setInterval(function () {
     var socket = SOCKET_LIST[i];
     socket.x++;
     socket.y++;
+    socket.rotate++;
     pack.push({
       x:socket.x,
-      y:socket.y
-    })
-    socket.emit('newPosition', pack);
+      y:socket.y,
+      rotate:socket.rotate
+    });
+    //  broadcast fixes issue with not update but also makes very buggy
+    socket.broadcast.emit('newPosition', pack);
   }
 }, frameTime );

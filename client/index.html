@@ -45,7 +45,7 @@
       let map = [];
       let shipState = 0; //0 = static, 1 = thrust
 
-      let drawCanvas = (x, y, rotationalVelocity) => {
+      let drawCanvas = (x, y, rotation) => {
         // background
         // context.fillStyle = '#000000';
         // context.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -55,10 +55,10 @@
         context.save();    // save the current stack
         context.setTransform(1,0,0,1,0,0); //  reset to identity
         //  canvas origin Player center
-        context.translate(x+W,y+H);
+        context.translate(x+15,y+15);
         context.rotate(radians);
         //drawShip
-        context.strokeStyle = '#000000';
+        context.strokeStyle = '#000';
         context.beginPath();
         // draw the ship
         // set rotation to image center
@@ -94,7 +94,7 @@
       socket.on('newPosition', function (data) {
         context.clearRect(0,0,600,320)
         for (var i = 0; i < data.length; i++) {
-          drawCanvas(data[i].x, data[i].y);
+          drawCanvas(data[i].x, data[i].y, data[i].rotate);
         }
       });
 
@@ -111,14 +111,14 @@
           y = canvas.height - H;
       }
 
-      //  create game loop
-      // const FRAMES_PER_SECOND = 40;
-      // let frameTime = 1000/FRAMES_PER_SECOND;
-      // setInterval(function () {
+      // create game loop
+      const FRAMES_PER_SECOND = 40;
+      let frameTime = 1000/FRAMES_PER_SECOND;
+      setInterval(function () {
       //   // drawCanvas(x, y);
-      //   boundry();
-      //   keyPress();
-      // }, frameTime );
+        boundry();
+        keyPress();
+      }, frameTime );
 
       document.onkeydown = (e) => {
         e = e?e:window.event;
