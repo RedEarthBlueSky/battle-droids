@@ -122,7 +122,6 @@
 
       document.onkeydown = (e) => {
         e = e?e:window.event;
-        console.log(e.keyCode);
         socket.emit('keyPressed',{keyCode:e.keyCode, state:true});
         // map[e.keyCode] = true;
       };

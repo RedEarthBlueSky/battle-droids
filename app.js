@@ -32,16 +32,17 @@ let Player = (id) => {
     movingY:0,
     width:30,  // drawn element width
     height:30, // drawn element height
-    map:[],
+    map:{},
     thrust:.06,
-    rotationalVelocity:5 //how many degrees to turn the ship
+    rotationalVelocity:5, //how many degrees to turn the ship
+    radians:0,
   }
 
   self.keyPress = () => {
      if (self.map[38] == true) {
-       let radians = self.rotation * Math.PI/180;
-       self.facingX = Math.cos(radians);
-       self.facingY = Math.sin(radians);
+       self.radians = self.rotate * Math.PI/180;
+       self.facingX = Math.cos(self.radians);
+       self.facingY = Math.sin(self.radians);
        self.movingX = self.movingX + self.thrust*self.facingX;
        self.movingY = self.movingY + self.thrust*self.facingY;
      }
@@ -78,7 +79,6 @@ io.sockets.on('connection', function(socket){
 
   socket.on('keyPressed', function (data) {
     player.map[data.keyCode] = data.state;
-    console.log(player.map[data.keyCode]);
   });
 });
 
