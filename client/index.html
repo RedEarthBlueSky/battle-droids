@@ -28,7 +28,6 @@
       let canvasHeight = canvas.height;
 
       //  player only
-
       let rotation = 0;
       let x = 50;
       let y = 50;
@@ -55,10 +54,11 @@
         context.save();    // save the current stack
         context.setTransform(1,0,0,1,0,0); //  reset to identity
         //  canvas origin Player center
-        context.translate(x+15,y+15);
+
+        context.translate(x+W,y+H);
         context.rotate(radians);
         //drawShip
-        context.strokeStyle = '#000';
+        context.strokeStyle = '#fff';
         context.beginPath();
         // draw the ship
         // set rotation to image center
