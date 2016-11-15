@@ -5,13 +5,18 @@
   padding:0;
 }
 html, body, main {
+  background-color:black;
   height:100%;
   min-height:100%;
 }
 main {
+  -webkit-flex-direction:row;
+  diplay:-webkit-flex;
+  display: flex;
+  flex-direction:row;
   position: absolute;
-  top: 50px;
-  left: 50px;
+  max-height:90vh;
+  max-width: 90vh;
 }
 canvas {
   /*background: #212944;
