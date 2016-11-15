@@ -21,7 +21,7 @@ let SOCKET_LIST = {};
 let PLAYER_LIST = {};
 
 let Player = (id) => {
-  var self = {
+  var ship = {
     x:50,
     y:50,
     rotate:0,
@@ -36,31 +36,44 @@ let Player = (id) => {
     thrust:.06,
     rotationalVelocity:5, //how many degrees to turn the ship
     radians:0,
+    W:30/2,
+    H:30/2,
+    canvasWidth:600,
+    canvasHeight:320,
   }
 
-  self.keyPress = () => {
-     if (self.map[38] == true) {
-       self.radians = self.rotate * Math.PI/180;
-       self.facingX = Math.cos(self.radians);
-       self.facingY = Math.sin(self.radians);
-       self.movingX = self.movingX + self.thrust*self.facingX;
-       self.movingY = self.movingY + self.thrust*self.facingY;
+  ship.keyPress = () => {
+     if (ship.map[38] == true) {
+       ship.radians = ship.rotate * Math.PI/180;
+       ship.facingX = Math.cos(ship.radians);
+       ship.facingY = Math.sin(ship.radians);
+       ship.movingX = ship.movingX + ship.thrust*ship.facingX;
+       ship.movingY = ship.movingY + ship.thrust*ship.facingY;
      }
 
-     if (self.map[37] == true) {
+     if (ship.map[37] == true) {
        //  decrementAngle
-       self.rotate -= self.rotationalVelocity;
+       ship.rotate -= ship.rotationalVelocity;
      }
 
-     if (self.map[39] == true) {
+     if (ship.map[39] == true) {
         // incrementAngle
-       self.rotate += self.rotationalVelocity;
+       ship.rotate += ship.rotationalVelocity;
      }
 
-     self.x = self.x + self.movingX;
-     self.y = self.y + self.movingY;
+     ship.x = ship.x + ship.movingX;
+     ship.y = ship.y + ship.movingY;
   }
-  return self;
+
+  ship.boundry = () => {
+    if (ship.x<=0) ship.x=0;
+    if (ship.y<=0) ship.y=0;
+    if (ship.x >= ship.canvasWidth - ship.W)
+      ship.x = ship.canvasWidth - ship.W;
+    if (ship.y >= ship.canvasHeight - ship.H)
+      ship.y = ship.canvasHeight - ship.H;
+  }
+  return ship;
 };
 
 const io = require('socket.io')(serv, {});
@@ -90,6 +103,7 @@ setInterval(function () {
   for (var i in PLAYER_LIST) {
     var player = PLAYER_LIST[i];
     player.keyPress();
+    player.boundry();
     pack.push({
       x:player.x,
       y:player.y,
